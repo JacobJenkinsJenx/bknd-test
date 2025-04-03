@@ -1,23 +1,22 @@
 import { defineMiddleware } from "astro:middleware";
-import { getApi } from "bknd/adapter/astro";
-
-const excludedPaths = [
-    "/api/auth/me",
-]
+import { getApi } from "./bknd";
+import type { AstroGlobal } from "astro";
+const excludedPaths = ["/api/auth/me"];
 
 export const onRequest = defineMiddleware(async (context, next) => {
-    if (excludedPaths.includes(context.url.pathname)) {
-        return next()
-    }
+   if (excludedPaths.includes(context.url.pathname)) {
+      return next();
+   }
 
-    const api = await getApi(context, { mode: "dynamic" });
-    const user = api.getUser();
+   // I've uncommented this, because it potentially makes astro think that every route is dynamic
+   // not sure about this, but it's outputting it as a warning in console
+   // it's still totally valid though
+   /* const api = await getApi(context as AstroGlobal, {
+      mode: "dynamic",
+      verify: true,
+   }); */
 
-    if (user) {
-        context.locals.user = user;
-    } else {
-        context.locals.user = null;
-    }
+   context.locals.user = null; // api.getUser();
 
-    return next()
-})
+   return next();
+});

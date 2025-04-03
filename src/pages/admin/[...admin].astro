@@ -3,11 +3,16 @@ export const prerender = false;
 
 import { Admin } from "bknd/ui";
 import "bknd/dist/styles.css";
+import { getApi } from "../../bknd";
 
-const { user } = Astro.locals
+// as commented in middleware.ts, we're not using the locals here, instead getting the user from the api. So that static pages remain static
+//const { user } = Astro.locals
 
-if (!user && Astro.url.pathname !== "/admin/auth/login") {
-   return Astro.redirect("/admin/auth/login")
+const api = await getApi(Astro, { mode: "dynamic", verify: true });
+const user = api.getUser();
+
+if (!user && !Astro.url.pathname.startsWith("/admin/auth")) {
+   return Astro.redirect("/admin/auth/login");
 }
 
 ---
