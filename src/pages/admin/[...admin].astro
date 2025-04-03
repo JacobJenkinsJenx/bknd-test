@@ -1,0 +1,27 @@
+---
+export const prerender = false;
+
+import { Admin } from "bknd/ui";
+import "bknd/dist/styles.css";
+
+const { user } = Astro.locals
+
+if (!user && Astro.url.pathname !== "/admin/auth/login") {
+   return Astro.redirect("/admin/auth/login")
+}
+
+---
+
+<html>
+   <body>
+      <Admin
+         withProvider={{ user }}
+         config={{
+            basepath: "/admin",
+            theme: "system",
+            logo_return_path: "/../"
+         }}
+         client:only="react"
+      />
+   </body>
+</html>

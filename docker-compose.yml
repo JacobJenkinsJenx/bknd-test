@@ -1,0 +1,22 @@
+version: "3.8"
+
+services:
+  astro-build:
+    image: node:alpine
+    container_name: astro-builder
+    working_dir: /app
+    volumes:
+      - .:/app
+    command: sh -c "npm install && npm run build"
+
+  astro-run:
+    image: node:alpine
+    container_name: astro-runner
+    working_dir: /app
+    volumes:
+      - ./dist:/app/dist
+    ports:
+      - "3000:3000"
+    command: sh -c "npm install -g serve && serve -s /app/dist"
+    depends_on:
+      - astro-build
