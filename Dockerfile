@@ -6,12 +6,12 @@ WORKDIR /app
 
 RUN echo "Copying package.json"
 # Copy package files and install dependencies
-COPY package.json pnpm-lock.yaml ./
+COPY package.json ./
 
 FROM base AS prod-deps
 RUN echo "Installing pnpm..."
 RUN npm install -g pnpm
-RUN pnpm install --frozen-lockfile
+RUN pnpm install
 
 FROM prod-deps AS build
 RUN echo "Copying rest..."
